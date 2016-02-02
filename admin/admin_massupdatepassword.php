@@ -44,7 +44,7 @@ if (! $user->admin) {
 // Parameters
 $action = GETPOST('action', 'alpha');
 $monthupdate=GETPOST('monthupdate','int');
-if (empty($monthupdate)) {
+if ($monthupdate!=0) {
 	$monthupdate=$conf->global->MUP_DEFAULT_MONTH_NEXT_RENEW;
 }
 

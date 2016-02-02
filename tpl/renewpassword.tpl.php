@@ -85,7 +85,7 @@ $(document).ready(function () {
 <tr>
 <td valign="bottom" class="nowrap center">
 <span class="span-icon-user">
-<input type="text" placeholder="<?php echo $langs->trans("MassUpdatePasswordCurrentPassword"); ?>" <?php echo $disabled; ?> id="currentpassword" name="currentpassword" class="flat input-icon-user" size="20" value="<?php echo dol_escape_htmltag($currentpassword); ?>" tabindex="1" />
+<input type="password" placeholder="<?php echo $langs->trans("MassUpdatePasswordCurrentPassword"); ?>" <?php echo $disabled; ?> id="currentpassword" name="currentpassword" class="flat input-icon-password" size="20" value="<?php echo dol_escape_htmltag($currentpassword); ?>" tabindex="2" />
 </span>
 </td>
 </tr>
@@ -93,7 +93,7 @@ $(document).ready(function () {
 <tr>
 <td valign="bottom" class="nowrap center">
 <span class="span-icon-user">
-<input type="text" placeholder="<?php echo $langs->trans("MassUpdatePasswordNewPassword"); ?>" <?php echo $disabled; ?> id="newpassword" name="newpassword" class="flat input-icon-user" size="20" value="<?php echo dol_escape_htmltag($newpassword); ?>" tabindex="1" />
+<input type="password" placeholder="<?php echo $langs->trans("MassUpdatePasswordNewPassword"); ?>" <?php echo $disabled; ?> id="newpassword" name="newpassword" class="flat input-icon-password" size="20" value="<?php echo dol_escape_htmltag($newpassword); ?>" tabindex="3" />
 </span>
 </td>
 </tr>
