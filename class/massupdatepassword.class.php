@@ -112,5 +112,86 @@ class MassUpdatePassword extends CommonObject
 			return - 1 * $error;
 		}
 	}
+	/**
+	 *
+	 * @param unknown $user
+	 * @param int $monthsincelastupdate
+	 */
+	public function updateRenewPasswordDate($user, $monthsincelastupdate=0) {
+		global $conf, $langs;
+		
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		
+		dol_syslog(get_class($this) . '::' . __METHOD__, LOG_DEBUG);
+		
+		$error = 0;
+		
+		$sql = 'SELECT rowid ';
+		$sql .= ' FROM ' . MAIN_DB_PREFIX . 'user ';
+		$sql .= ' WHERE ';
+		$sql .= ' admin<>1 ';
+		$sql .= ' AND statut=1 ';
+		
+		$resql = $this->db->query($sql);
+		if (! $resql) {
+				
+			$error ++;
+			$this->errors[] = 'Error ' . $this->db->lasterror();
+			dol_syslog(__METHOD__ . ' ' . join(',', $this->errors), LOG_ERR);
+		}
+		
+		if (empty($error)) {
+			while ( $obj_user = $this->db->fetch_object($resql) ) {
+				
+				//Find if updagte or insert into extrafields
+				$sql_inner = 'SELECT rowid FROM ' . MAIN_DB_PREFIX . 'user_extrafields';
+				$sql_inner .= ' WHERE fk_object='.$obj_user->rowid;
+				
+				$resql_inner = $this->db->query($sql_inner);
+				if (! $resql_inner) {
+				
+					$error ++;
+					$this->errors[] = 'Error ' . $this->db->lasterror();
+					dol_syslog(__METHOD__ . ' ' . join(',', $this->errors), LOG_ERR);
+				}
+				
+				//Set password expiration date
+				if (empty($error)) {
+					$num_inner=$this->db->num_rows($resql_inner);
+					if (empty($num_inner)) {
+						$sql_ope = 'INSERT INTO ' . MAIN_DB_PREFIX . 'user_extrafields(fk_object,pwd_expiration_dt)';
+						$sql_ope .= 'VALUES ('.$obj_user->rowid.',\''.$this->db->idate(dol_time_plus_duree(dol_now(), $monthsincelastupdate, 'm')).'\')';
+						
+						$resql_ope = $this->db->query($sql_ope);
+						if (! $resql_ope) {
+						
+							$error ++;
+							$this->errors[] = 'Error ' . $this->db->lasterror();
+							dol_syslog(__METHOD__ . ' ' . join(',', $this->errors), LOG_ERR);
+						}
+					} else {
+						$sql_ope = 'UPDATE ' . MAIN_DB_PREFIX . 'user_extrafields';
+						$sql_ope .= ' SET pwd_expiration_dt=\''.$this->db->idate(dol_time_plus_duree(dol_now(), $monthsincelastupdate, 'm')).'\'';
+						$sql_ope .= ' WHERE fk_object='.$obj_user->rowid;
+
+						$resql_ope = $this->db->query($sql_ope);
+						if (! $resql_ope) {
+								
+							$error ++;
+							$this->errors[] = 'Error ' . $this->db->lasterror();
+							dol_syslog(__METHOD__ . ' ' . join(',', $this->errors), LOG_ERR);
+						}
+					}
+				}
+			}
+		}
+		
+		if (empty($error)) {
+			return 1;
+		} else {
+			$this->error = join(',', $this->errors);
+			return - 1 * $error;
+		}
+	}
 }
 	

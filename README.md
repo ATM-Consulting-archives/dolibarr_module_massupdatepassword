@@ -1,7 +1,9 @@
-Mss Update Password
+Password Management
 =========
 
-This module give a script (to lauch by scron) or graphical way to reset en send ny email all user password (except admin)
+This module 
+	- set a limit valid date for password
+	- give a script (to lauch by scron) or graphical way to reset en send ny email all user password (except admin)
 
 Licence
 -------

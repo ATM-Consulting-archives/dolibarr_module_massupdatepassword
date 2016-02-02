@@ -94,7 +94,7 @@ class modMassUpdatePassword extends DolibarrModules
             // Set this to relative path of css if module has its own css file
             //'css' => 'massupdatepassword/css/mycss.css.php',
             // Set here all hooks context managed by module
-            //'hooks' => array('hookcontext1','hookcontext2')
+            'hooks' => array('login')
             // Set here all workflow context managed by module
             //'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
         );
@@ -122,22 +122,28 @@ class modMassUpdatePassword extends DolibarrModules
         // List of particular constants to add when module is enabled
         // (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
         // Example:
-        $this->const = array(
-            //	0=>array(
-            //		'MYMODULE_MYNEWCONST1',
-            //		'chaine',
-            //		'myvalue',
-            //		'This is a constant to add',
-            //		1
-            //	),
-            //	1=>array(
-            //		'MYMODULE_MYNEWCONST2',
-            //		'chaine',
-            //		'myvalue',
-            //		'This is another constant to add',
-            //		0
-            //	)
+        $r=0;
+        $this->const[$r]=array(
+            		'MUP_SECURITY_DISABLENEWPASSLINK',
+            		'yesno',
+            		'0',
+            		'',
+            		0,
+            		'current',
+            		0
+            	);
+        
+       $r++;
+        $this->const[$r]=array(
+        		'MUP_DEFAULT_MONTH_NEXT_RENEW',
+        		'chaine',
+        		'2',
+        		'Default renew password',
+        		1,
+        		'current',
+        		0
         );
+           
 
         // Array to add new pages in new tabs
         // Example:
