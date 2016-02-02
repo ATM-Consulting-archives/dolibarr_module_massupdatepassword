@@ -70,7 +70,7 @@ $head = massupdatepasswordAdminPrepareHead();
 dol_fiche_head(
     $head,
     'about',
-    $langs->trans("Module10000Name"),
+    $langs->trans("Module103985Name"),
     0,
     'massupdatepassword@massupdatepassword'
 );

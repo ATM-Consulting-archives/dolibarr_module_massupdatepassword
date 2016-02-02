@@ -33,11 +33,11 @@ function massupdatepasswordAdminPrepareHead()
     $head = array();
 
     $head[$h][0] = dol_buildpath("/massupdatepassword/admin/admin_massupdatepassword.php", 1);
-    $head[$h][1] = $langs->trans("Settings");
+    $head[$h][1] = $langs->trans("MassUpdatePasswordSetup");
     $head[$h][2] = 'settings';
     $h++;
     $head[$h][0] = dol_buildpath("/massupdatepassword/admin/about.php", 1);
-    $head[$h][1] = $langs->trans("About");
+    $head[$h][1] = $langs->trans("MassUpdatePasswordAbout");
     $head[$h][2] = 'about';
     $h++;
 

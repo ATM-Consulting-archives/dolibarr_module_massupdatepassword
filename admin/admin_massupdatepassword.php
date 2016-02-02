@@ -17,28 +17,28 @@
  */
 
 /**
- * 	\file		admin/massupdatepassword.php
- * 	\ingroup	massupdatepassword
- * 	\brief		This file is an example module setup page
- * 				Put some comments here
+ * \file admin/massupdatepassword.php
+ * \ingroup massupdatepassword
+ * \brief This file is an example module setup page
+ * Put some comments here
  */
 // Dolibarr environment
-$res = @include("../../main.inc.php"); // From htdocs directory
+$res = @include ("../../main.inc.php"); // From htdocs directory
 if (! $res) {
-    $res = @include("../../../main.inc.php"); // From "custom" directory
+	$res = @include ("../../../main.inc.php"); // From "custom" directory
 }
-
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
 require_once '../lib/massupdatepassword.lib.php';
-//require_once "../class/myclass.class.php";
+require_once "../class/massupdatepassword.class.php";
+
 // Translations
 $langs->load("massupdatepassword@massupdatepassword");
 
 // Access control
 if (! $user->admin) {
-    accessforbidden();
+	accessforbidden();
 }
 
 // Parameters
@@ -47,6 +47,17 @@ $action = GETPOST('action', 'alpha');
 /*
  * Actions
  */
+if ($action == 'updatepassword_confirm' && $confirm = 'yes') {
+	
+	$object = new MassUpdatePassword($db);
+	
+	$result = $object->updateMassUpdatePassword($user, array ());
+	if ($result < 0) {
+		setEventMessages(null,$object->errors,'errors');
+	} else {
+		setEventMessages($langs->trans('Success'),null);
+	}
+}
 
 /*
  * View
@@ -54,23 +65,26 @@ $action = GETPOST('action', 'alpha');
 $page_name = "MassUpdatePasswordSetup";
 llxHeader('', $langs->trans($page_name));
 
+if ($action == 'updatepassword') {
+	$form = new Form($db);
+	$text = $langs->trans("MassUpdatePasswordOpeText", dol_buildpath('/massupdatepassword/scripts/massupdatepassword.php') . ' ' . $user->login);
+	$ret = $form->form_confirm($_SERVER['PHP_SELF'], $langs->trans("MassUpdatePasswordOpe"), $text, "updatepassword_confirm", '', '', 1, 250);
+	if ($ret == 'html')
+		print '<br>';
+}
+
 // Subheader
-$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-    . $langs->trans("BackToModuleList") . '</a>';
+$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = massupdatepasswordAdminPrepareHead();
-dol_fiche_head(
-    $head,
-    'settings',
-    $langs->trans("Module10000Name"),
-    0,
-    "massupdatepassword@massupdatepassword"
-);
+dol_fiche_head($head, 'settings', $langs->trans("Module103985Name"), 0, "massupdatepassword@massupdatepassword");
 
 // Setup page goes here
 echo $langs->trans("MassUpdatePasswordSetupPage");
+print '<BR>';
+print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?action=updatepassword">'.$langs->trans("MassUpdatePasswordOpe").'</a>';
 
 // Page end
 dol_fiche_end();

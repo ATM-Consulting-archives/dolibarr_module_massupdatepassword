@@ -18,28 +18,30 @@
  */
 
 /**
- *	\file		scripts/myscript.php
- *	\ingroup	massupdatepassword
- *	\brief		This file is an example command line script
- *				Put some comments here
+ * \file scripts/massupdatepassword.php
+ * \ingroup massupdatepassword
+ * \brief This file massupdatepassword
  */
-
 $sapi_type = php_sapi_name();
 $script_file = basename(__FILE__);
 $path = dirname(__FILE__) . '/';
 
 // Test if batch mode
 if (substr($sapi_type, 0, 3) == 'cgi') {
-    echo "Error: You are using PHP for CGI. To execute ";
-    echo $script_file;
-    echo " from command line, you must use PHP for CLI mode.\n";
-    exit;
+	echo "Error: You are using PHP for CGI. To execute ";
+	echo $script_file;
+	echo " from command line, you must use PHP for CLI mode.\n";
+	exit();
+}
+
+if (! isset($argv[1]) || ! $argv[1]) {
+	print "Usage: " . $script_file . " userlogin [mailing_id] \n";
+	exit();
 }
 
 // Global variables
 $version = '1.0.0';
 $error = 0;
-
 
 /*
  * -------------------- YOUR CODE STARTS HERE --------------------
@@ -51,145 +53,78 @@ define('EVEN_IF_ONLY_LOGIN_ALLOWED', 0);
 /* Include Dolibarr environment
  * Customize to your needs
  */
-require_once $path . '../../../master.inc.php';
-/* After this $db, $conf, $langs, $mysoc, $user and other Dolibarr utility variables should be defined.
- * Warning: this still requires a valid htdocs/conf.php file
- */
-
+$res = @include $path . '../../../master.inc.php'; // For root directory
+if (! $res) {
+	$res = @include $path . '../../master.inc.php'; // For "custom" directory
+}
+if (! $res) {
+	die("Include of master fails");
+}
 // No timeout for this script
 @set_time_limit(0);
 
 // Set the default language
-//$langs->setDefaultLang('en_US');
+// $langs->setDefaultLang('en_US');
 
 // Load translations for the default language
 $langs->load("main");
-
-/* User and permissions loading
- * Loads user for login 'admin'.
- * Comment out to run as anonymous user. */
-$result = $user->fetch('', 'admin');
-if (! $result > 0) {
-    dol_print_error('', $user->error);
-    exit;
-}
-$user->getrights();
+$langs->load("massupdatepassword@massupdatepassword");
+$langs->load("mails");
 
 // Display banner and help
 echo "***** " . $script_file . " (" . $version . ") *****\n";
 if (! isset($argv[1])) {
-    // Check parameters
-    echo "Usage: " . $script_file . " param1 param2 ...\n";
-    exit;
+	// Check parameters
+	echo "Usage: " . $script_file . " userlogin \n";
+	exit();
 }
-echo '--- start' . "\n";
-echo 'Argument 1=' . $argv[1] . "\n";
-echo 'Argument 2=' . $argv[2] . "\n";
 
-// Start database transaction
-$db->begin();
+/* User and permissions loading
+ * Loads user for login 'admin'.
+ * Comment out to run as anonymous user. */
+$userlogin = $argv[1];
+
+$result = $user->fetch('', $userlogin);
+if (! $result > 0) {
+	dol_print_error('', $user->error);
+	exit();
+}
+$user->getrights();
+
+// Display banner and help
+echo '--- start ' . dol_print_date(dol_now(), 'dayhourtext') . "\n";
+echo 'userlogin=' . $userlogin . "\n";
+
+$langs = new Translate("", $conf);
+$new_tranlaste = 'fr_FR';
+$langs->setDefaultLang($new_tranlaste);
 
 // Examples for manipulating a class
-require_once '../class/myclass.class.php';
-$myobject = new SkeletonClass($db);
+dol_include_once('/massupdatepassword/class/massupdatepassword.class.php');
+$object = new MassUpdatePassword($db);
 
-// Example for inserting creating object in database
-/*
-    dol_syslog($script_file . " CREATE", LOG_DEBUG);
-    $myobject->prop1 = 'value_prop1';
-    $myobject->prop2 = 'value_prop2';
-    $id = $myobject->create($user);
-    if ($id < 0) {
-        $error++;
-        dol_print_error($db, $myobject->error);
-    } else {
-         echo "Object created with id=" . $id . "\n";
-    }
- */
+echo '--- '. $langs->trans('MassUpdatePasswordOpe'). "\n";
 
-// Example for reading object from database
-/*
-    dol_syslog($script_file . " FETCH", LOG_DEBUG);
-    $result = $myobject->fetch($id);
-    if ($result < 0) {
-        $error;
-        dol_print_error($db, $myobject->error);
-    } else {
-        echo "Object with id=" . $id . " loaded\n";
-    }
- */
-
-// Example for updating object in database
-// ($myobject must have been loaded by a fetch before)
-/*
-    dol_syslog($script_file . " UPDATE", LOG_DEBUG);
-    $myobject->prop1 = 'newvalue_prop1';
-    $myobject->prop2 = 'newvalue_prop2';
-    $result = $myobject->update($user);
-    if ($result < 0) {
-        $error++;
-        dol_print_error($db, $myobject->error);
-    } else {
-        echo "Object with id " . $myobject->id . " updated\n";
-    }
- */
-
-// Example for deleting object in database
-// ($myobject must have been loaded by a fetch before)
-/*
-    dol_syslog($script_file . " DELETE", LOG_DEBUG);
-    $result = $myobject->delete($user);
-    if ($result < 0) {
-        $error++;
-        dol_print_error($db, $myobject->error);
-    } else {
-        echo "Object with id " . $myobject->id . " deleted\n";
-    }
- */
-
-// An example of a direct SQL read without using the fetch method
-/*
-    $sql = "SELECT field1, field2";
-    $sql.= " FROM " . MAIN_DB_PREFIX . "c_pays";
-    $sql.= " WHERE field3 = 'xxx'";
-    $sql.= " ORDER BY field1 ASC";
-
-    dol_syslog($script_file . " sql=" . $sql, LOG_DEBUG);
-    $resql=$db->query($sql);
-    if ($resql) {
-        $num = $db->num_rows($resql);
-        $i = 0;
-        if ($num) {
-            while ($i < $num) {
-                $obj = $db->fetch_object($resql);
-                if ($obj) {
-                    // You can use here results
-                    echo $obj->field1;
-                    echo $obj->field2;
-                }
-                $i++;
-            }
-        }
-    } else {
-        $error++;
-        dol_print_error($db);
-    }
- */
-
+$result = $object->updateMassUpdatePassword($user, array());
+if ($result < 0) {
+	echo '--- updateMassUpdatePassword error message=' . $object->error . "\n";
+	$error ++;
+}
 
 /*
  * --------------------- YOUR CODE ENDS HERE ----------------------
  */
 
+print '--- end  ' . dol_print_date(dol_now(), 'dayhourtext') . "\n";
 // Error management
 if (! $error) {
-    $db->commit();
-    echo '--- end ok' . "\n";
-    $exit_status = 0; // UNIX no errors exit status
+	// $db->commit();
+	echo '--- end ok' . "\n";
+	$exit_status = 0; // UNIX no errors exit status
 } else {
-    echo '--- end error code=' . $error . "\n";
-    $db->rollback();
-    $exit_status = 1; // UNIX general error exit status
+	echo '--- end error code=' . $error . "\n";
+	// $db->rollback();
+	$exit_status = 1; // UNIX general error exit status
 }
 
 // Close database handler

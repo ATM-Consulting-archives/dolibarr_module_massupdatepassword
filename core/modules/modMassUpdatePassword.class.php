@@ -45,7 +45,7 @@ class modMassUpdatePassword extends DolibarrModules
         // Id for module (must be unique).
         // Use a free id here
         // (See http://wiki.dolibarr.org/index.php/List_of_modules_id for available ranges).
-        $this->numero = 10000;
+        $this->numero = 103985;
         // Key text used to identify module (for permissions, menus, etc...)
         $this->rights_class = 'massupdatepassword';
 
@@ -61,13 +61,13 @@ class modMassUpdatePassword extends DolibarrModules
         // (where XXX is value of numeric property 'numero' of module)
         $this->description = "Description of module MassUpdatePassword";
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = 'development';
+        $this->version = '0.1';
         // Key used in llx_const table to save module status enabled/disabled
         // (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
         // Where to store the module in setup page
         // (0=common,1=interface,2=others,3=very specific)
-        $this->special = 3;
+        $this->special = 2;
         // Name of image file used for this module.
         // If file is in theme/yourtheme/img directory under name object_pictovalue.png
         // use this->picto='pictovalue'
@@ -116,7 +116,7 @@ class modMassUpdatePassword extends DolibarrModules
         // Minimum version of PHP required by module
         $this->phpmin = array(5, 3);
         // Minimum version of Dolibarr required by module
-        $this->need_dolibarr_version = array(3, 5);
+        $this->need_dolibarr_version = array(3, 7);
         $this->langfiles = array("massupdatepassword@massupdatepassword"); // langfiles@massupdatepassword
         // Constants
         // List of particular constants to add when module is enabled
@@ -222,7 +222,7 @@ class modMassUpdatePassword extends DolibarrModules
         $r = 0;
         // Example:
 
-        $this->boxes[$r][1] = "MyBox@massupdatepassword";
+        //$this->boxes[$r][1] = "MyBox@massupdatepassword";
         $r ++;
         /*
           $this->boxes[$r][1] = "myboxb.php";
@@ -333,7 +333,7 @@ class modMassUpdatePassword extends DolibarrModules
         //);
         //$r++;
         // Exports
-        $r = 1;
+        //$r = 1;
 
         // Example:
         //$this->export_code[$r]=$this->rights_class.'_'.$r;
