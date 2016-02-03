@@ -1,0 +1,10 @@
+active_standards=Dolibarr
+custom_standard_names=Dolibarr
+custom_standard_paths=/home/bobby/Eclipse/workspace/dolibarr/dev/codesniffer
+default_tab_width=4
+eclipse.preferences.version=1
+file_extension=*.php,*.tpl
+ignore_pattern=/custom*/*,/includes/*,/.git/*
+pear_library=<Internal>
+php_executable=php5.5
+pref_ignore_sniffs=
